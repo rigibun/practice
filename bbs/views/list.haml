@@ -1,0 +1,18 @@
+%div.container
+  - if @list.size == 0
+    %h1 No Topics.
+    %a.btn.btn-default(href="./create") Create Topic
+  - else
+    %h1 Topics
+    - @list.each do |item|
+      - id = item[0]
+      - topic = item[1]
+      %h2
+        = id
+        %a(href="./show/#{id}")
+          = topic.title
+      - name, text = topic.responses[0]
+      %h3
+        = name
+      %p
+        = text

@@ -1,0 +1,20 @@
+%div.container
+  %div.col-sm-6
+    %form(action="./create" method="POST")
+      %div.form-group<
+        %label.control-label(for="inputName")
+          name
+        %br<>
+        %input.form-control#inputName(type="text" name="name" required)<>
+      %div.form-group<
+        %label.control-label(for="inputTitle")
+          title
+        %br<>
+        %input.form-control#inputTitle(type="text" name="title" required)<>
+      %div.form-group<
+        %label.control-label(for="inputText")
+          text
+        %br<>
+        %textarea.form-control#inputText(name="text" wrap="hard" required)<>
+      %div.form-group<
+        %button.btn.btn-primary(type="submit") Submit
