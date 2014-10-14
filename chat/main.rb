@@ -10,6 +10,8 @@ class App < Sinatra::Base
     register Sinatra::Reloader
   end
 
+  enable :sessions
+
   get '/' do
     @styleSheets = ["index"]
     haml :index
