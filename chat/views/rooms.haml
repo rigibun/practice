@@ -16,8 +16,9 @@
           %span.glyphicon.glyphicon-home
           部屋名1
         %p 注釈
-      %div.well.well-lg
-        %h3.room-title
-          %span.glyphicon.glyphicon-home
-          部屋名2
-        %p 注釈
+      - $rooms.each_with_index do |room, i|
+        %div.well.well-lg
+          %h3.room-title
+            %span.glyphicon.glyphicon-home
+            = room.title
+          %a.btn.btn-primary(href="/room/#{i}") Join

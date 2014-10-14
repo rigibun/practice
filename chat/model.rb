@@ -29,4 +29,6 @@ class Room
     @posts.push({user: user, message: message, time: Time.now})
     @nextId += 1
   end
+
+  attr_reader :title
 end
