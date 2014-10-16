@@ -1,20 +1,25 @@
 require 'json'
 
-class Room
-  def initialize title
-    @title = title
+class Chat
+  def initialize
     @users = []
-    @posts = []
-    @nextId = 1
   end
 
   def join username
-    unless @users.find username
+    unless @users.find{|name| name == username}
       @users.push username
       true
     else
       false
     end
+  end
+end
+
+class Room
+  def initialize title
+    @title = title
+    @posts = []
+    @nextId = 1
   end
 
   def get id = 0

@@ -1,0 +1,14 @@
+%div.container
+  %div.header
+    %ul.nav.nav-pills.pull-right
+      %li
+        %a(href="/") Home
+      %li
+        %a(href="/rooms") Rooms
+      %li
+        %a(href="/about") About
+    %h3.text-muted Real Time Chat System
+
+%div.container
+  %p
+    = "Welcome to #{@room.title}, #{@name}!"

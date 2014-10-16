@@ -1,0 +1,16 @@
+%div.container
+  %div.header
+    %ul.nav.nav-pills.pull-right
+      %li
+        %a(href="/") Home
+      %li.active
+        %a(href="/rooms") Rooms
+      %li
+        %a(href="/about") About
+    %h3.text-muted Real Time Chat System
+
+%div.container
+  %form.form-signin(role="form" action="./join" method="POST")
+    %h2.form-signin-heading Input your name
+    %input.form-control(type="text" name="username" placeholder="Your Username" required autofocus)
+    %button.btn.btn-lg.btn-primary.btn-block(type="submit")Join
