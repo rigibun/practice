@@ -22,18 +22,30 @@ class Room
     @nextId = 1
   end
 
-  def get id = 0
-    @posts[id .. -1]
+  def get id = -1
+    ret = []
+    cnt = 0
+    @posts.reverse_each do |post|
+      break if cnt > 20 or post[:id] == id
+      cnt += 1
+      ret.push post
+    end
+    ret
   end
 
-  def getJson id = 0
-    JSON.generate self.get id
+  def getJson id = -1
+    JSON.generate({id: @nextId - 1, messages: self.get(id)})
   end
 
   def post user, message
-    @posts.push({user: user, message: message, time: Time.now})
+    @posts.push({id: @nextId, type: "message", user: user, message: message, time: Time.now.strftime("%Y-%m-%d %H:%M:%S")})
     @nextId += 1
   end
 
-  attr_reader :title
+  def join user
+    @posts.push({id: @nextId, type: "join", user: user, message: "#{user} さんが参加しました!", time: Time.now.strftime("%Y-%m-%d %H:%M:%S")})
+    @nextId += 1
+  end
+
+  attr_reader :title, :nextId
 end

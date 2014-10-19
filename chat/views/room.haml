@@ -10,5 +10,152 @@
     %h3.text-muted Real Time Chat System
 
 %div.container
-  %p
+  %h3
     = "Welcome to #{@room.title}, #{@name}!"
+  %div.row
+    -#%div.col-md-6.input-group
+    %form.col-xs-10.col-sm-10.col-md-6{name: 'sendMessage', onsubmit: "return false;"}
+      %input{type: 'hidden', name: 'messageRoomNumber', value: "#{@roomNumber}"}
+      %input{type: 'hidden', name: 'userName', value: "#{@name}"}
+      %input{type: 'hidden', name: 'gotId', value: "#{@room.nextId - 1}"}
+      %div.input-group
+        %span.input-group-addon
+          %span.glyphicon.glyphicon-user
+          = @name
+        %input.form-control{name: 'messageText', type: "text", placeholder: "chat"}
+        %span.input-group-btn
+          %button.btn.btn-default{type: "button", name: 'messageBtn'}
+            %span.glyphicon.glyphicon-pencil
+            send
+    %div.col-md-2
+      %button.btn.btn-primary#reload-btn
+        %span.glyphicon.glyphicon-refresh
+        reload
+
+  %div#messages
+    - messages = @room.get
+    - messages.each do |message|
+      - if message[:type] == "message"
+        %div.well.well-sm
+          %div.glyphicon.glyphicon-user
+            = "#{message[:user]} さん"
+            %span.text-muted
+              = "#{message[:time]}"
+          %p
+            = message[:message]
+      - if message[:type] == "join"
+        %div.alert.alert-info.alert-dismissible
+          %button.close(type="button" data-dismiss="alert")
+            %span(aria-hidden="true") &times;
+            %span.sr-only Close
+          = message[:message]
+
+:javascript
+  (function(){
+    /*var x = new XMLHttpRequest();
+    x.open('GET', '/get_json', true);
+    x.addEventListener("load", function(ev){
+      alert(ev);
+    });
+    x.send();*/
+
+    function showMessages(messages) {
+      console.log(messages);
+      for(var i = messages.length - 1; i >= 0; i--) {
+        var message = messages[i];
+        var messageElement;
+        if (message.type == 'message') {
+          messageElement = createMessageElement(message);
+        } else {
+          messageElement = createNotationElement(message);
+        }
+        console.log(message);
+      }
+    }
+
+    function addMessageElement(messageElement) {
+      var b = document.getElementById('messages');
+      b.appendChild(messageElement);
+    }
+
+    function createMessageElement(message) {
+      var messageText = document.createElement('p');
+      messageText.textContent = message.message;
+
+      var time = document.createElement('span');
+      time.classList.add('text-muted')
+      time.textContent = ' ' + message.time;
+
+      var nameArea = document.createElement('div');
+      nameArea.classList.add('glyphicon', 'glyphicon-user');
+      nameArea.textContent = ' ' + message.user + ' さん';
+
+      nameArea.appendChild(time);
+
+      var elem = document.createElement('div');
+      elem.classList.add('well', 'well-sm');
+      elem.appendChild(nameArea);
+      elem.appendChild(messageText);
+
+      console.log(elem);
+
+      var b = document.getElementById('messages');
+      b.insertBefore(elem, b.firstChild);
+    }
+
+    function createNotationElement(message) {
+
+    }
+
+    function updateGotId(id) {
+      document.sendMessage.gotId.value = id.toString();
+    }
+
+    function reload() {
+      var id = document.sendMessage.gotId.value;
+      var x = new XMLHttpRequest();
+      x.open('GET', '/api/get_json?room_number=0&id=' + id);
+      console.log('/api/get_json?room_number=0&id=' + id);
+      x.addEventListener('load', function(ev){
+        if(x.readyState === 4 && x.status === 200) {
+          console.log(x.responseText);
+          var j = JSON.parse(x.responseText);
+          console.log(j);
+          updateGotId(j.id);
+          showMessages(j.messages);
+        }
+      });
+      x.send();
+    }
+
+    function sendMessage() {
+      var num = document.sendMessage.messageRoomNumber.value;
+      var text = document.sendMessage.messageText.value;
+      var name = document.sendMessage.userName.value;
+      var data = {
+        number: num,
+        text: text,
+        name: name
+      };
+
+      console.log(data);
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/api/send_json');
+      xhr.setRequestHeader("Content-Type",
+          "application/json;charset=UTF-8");
+      xhr.send(JSON.stringify(data));
+
+      document.sendMessage.messageText.value = '';
+    }
+
+    document.sendMessage.messageBtn.addEventListener('click', sendMessage);
+
+    document.sendMessage.messageText.addEventListener('keydown', function(code) {
+      if(code.keyIdentifier === 'Enter') {
+        sendMessage();
+      }
+    });
+
+    document.getElementById('reload-btn').addEventListener('click', reload);
+  })();
