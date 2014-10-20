@@ -3,6 +3,7 @@ require 'json'
 class Chat
   def initialize
     @users = []
+    @rooms = []
   end
 
   def join username
@@ -13,6 +14,12 @@ class Chat
       false
     end
   end
+
+  def createRoom title
+    @rooms.push Room.new(title)
+  end
+
+  attr_accessor :rooms
 end
 
 class Room

@@ -23,7 +23,7 @@ class App < Sinatra::Base
   get '/room/:number' do
     redirect '/join' unless session[:username] # ログインしていない場合joinにリダイレクト
     @roomNumber = params[:number].to_i
-    @room = $rooms[@roomNumber]
+    @room = $chat.rooms[@roomNumber]
     @name = session[:username]
     unless session[:joined].split.find{|s| s == params[:number]}
       session[:joined] += " #{params[:number]}"
@@ -34,7 +34,7 @@ class App < Sinatra::Base
   end
 
   get '/api/get_json' do
-    room = $rooms[params[:room_number].to_i]
+    room = $chat.rooms[params[:room_number].to_i]
     id = if params[:id]
               params[:id].to_i
             else
@@ -44,12 +44,17 @@ class App < Sinatra::Base
   end
 
   post '/api/send_json', provides: :json do
-    p params = JSON.parse(request.body.read)
-    room = $rooms[params["nubmer"].to_i]
+    params = JSON.parse(request.body.read)
+    room = $chat.rooms[params["nubmer"].to_i]
     name = params["name"]
     text = params["text"]
     room.post name, text
     'test'
+  end
+
+  post '/create_room' do
+    $chat.createRoom params[:title]
+    redirect '/rooms'
   end
 
   get '/join' do

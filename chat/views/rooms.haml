@@ -10,9 +10,17 @@
     %h3.text-muted Real Time Chat System
 
   %div.row
-    %div.col-md-8
-      - $rooms.each_with_index do |room, i|
-        %div.well.well-lg
+    %form.col-md-8{name: 'createRoom', action: './create_room', method: 'POST'}
+      %div.input-group
+        %input.form-control{name: 'title', type: "text", placeholder: "Room Title"}
+          %span.input-group-btn
+            %button.btn.btn-default{type: "button", name: 'messageBtn'}
+              Create Room
+
+  - $chat.rooms.each_with_index do |room, i|
+    %div.row
+      %div.col-md-8
+        %div.well.well-sm
           %h3.room-title
             %span.glyphicon.glyphicon-home
             = room.title
